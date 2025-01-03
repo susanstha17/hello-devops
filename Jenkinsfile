@@ -54,7 +54,7 @@ pipeline {
                 sh '''
                 docker stop tomcatInstanceProd || true
                 docker rm tomcatInstanceProd || true
-                docker run -itd --name tomcatInstanceProd -p 8081:8080 localtomcatimg:$BUILD_NUMBER
+                docker run -itd --name tomcatInstanceProd -p 8082:8080 localtomcatimg:$BUILD_NUMBER
                 '''
             }
         }
