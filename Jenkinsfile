@@ -24,7 +24,7 @@ pipeline {
                 sh '''
                 original_pwd=$(pwd -P)
                 cd .
-                docker-compose up -d 
+                docker compose up -d 
                 cd $original_pwd
                 sh '''
             }
