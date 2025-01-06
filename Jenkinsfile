@@ -24,24 +24,24 @@ pipeline {
                 sh '''
                 original_pwd=$(pwd -P)
                 cd .
-                docker compose up -d 
+                docker compose up 
                 cd $original_pwd
                 sh '''
             }
         }
-//          stage('Deploy to Stagging Env') {
-//             agent {
-//                 label 'prodjenkins'
-//             }
-//             steps {
-//                 echo "Running app on stagging env"
-//                 sh '''
-//                 // docker stop tomcatInstanceStaging || true
-//                 // docker rm tomcatInstanceStaging || true
-//                  docker run -itd --name tomcatInstanceStaging -p 8085:8080 localtomcatimg:$BUILD_NUMBER
-//                 sh '''
-//             }
-//         }
+        //  stage('Deploy to Stagging Env') {
+        //     agent {
+        //         label 'prodjenkins'
+        //     }
+        //     steps {
+        //         echo "Running app on stagging env"
+        //         sh '''
+        //          docker stop tomcatInstance || true
+        //          docker rm tomcatInstance || true
+        //          docker compose up -d
+        //         sh '''
+        //     }
+        // }
 //          stage('Deploy Production Environment') {
 //             agent {
 //                 label 'prodjenkins'
