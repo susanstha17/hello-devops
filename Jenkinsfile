@@ -54,6 +54,7 @@ pipeline {
                 sh '''
                 docker stop tomcatInstanceProd || true
                 docker rm tomcatInstanceProd || true
+                docker-compose up -d --no-cache
                 docker run -itd --name tomcatInstanceProd -p 8082:8080 localtomcatimg:$BUILD_NUMBER
                 '''
             }
