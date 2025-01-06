@@ -24,7 +24,6 @@ pipeline {
                 sh '''
                 original_pwd=$(pwd -P)
                 cd .
-                // docker build -t localtomcatimg:$BUILD_NUMBER .
                 docker-compose up -d 
                 cd $original_pwd
                 sh '''
