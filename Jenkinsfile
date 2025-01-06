@@ -36,6 +36,8 @@ pipeline {
             steps {
                 echo "Running app on stagging env"
                 sh '''
+                docker stop tomcatInstance || true
+                docker rm tomcatInstance || true
                  docker compose up -d
                 sh '''
             }
