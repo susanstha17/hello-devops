@@ -1,5 +1,6 @@
 services:
   tomcat-cont:
+    container_name: tomcatInstance
     build: .
     ports:
       - "8082:8080"
