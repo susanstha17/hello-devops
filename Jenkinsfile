@@ -29,19 +29,17 @@ pipeline {
                 sh '''
             }
         }
-        //  stage('Deploy to Stagging Env') {
-        //     agent {
-        //         label 'prodjenkins'
-        //     }
-        //     steps {
-        //         echo "Running app on stagging env"
-        //         sh '''
-        //          docker stop tomcatInstance || true
-        //          docker rm tomcatInstance || true
-        //          docker compose up -d
-        //         sh '''
-        //     }
-        // }
+         stage('Deploy to Stagging Env') {
+            agent {
+                label 'prodjenkins'
+            }
+            steps {
+                echo "Running app on stagging env"
+                sh '''
+                 docker compose up -d
+                sh '''
+            }
+        }
 //          stage('Deploy Production Environment') {
 //             agent {
 //                 label 'prodjenkins'
