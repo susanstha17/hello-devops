@@ -24,7 +24,7 @@ pipeline {
                 sh '''
                 original_pwd=$(pwd -P)
                 cd .
-                docker compose build 
+                docker compose build --no-cache
                 cd $original_pwd
                 sh '''
             }
