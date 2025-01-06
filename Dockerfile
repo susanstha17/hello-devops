@@ -1,6 +1,6 @@
 FROM tomcat:9.0
 ARG PROJDIR="/usr/local/tomcat/webapps/"
-RUN useradd -m -s /bin/bash susan && echo "susan:password" | susan
+RUN useradd -m -s /bin/bash susan && echo "susan:susan" | chpasswd
 RUN usermod -aG sudo susan
 USER susan
 WORKDIR $PROJDIR
