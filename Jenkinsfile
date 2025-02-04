@@ -42,53 +42,53 @@ pipeline {
                 sh '''
             }
         }
-//          stage('Deploy Production Environment') {
-//             agent {
-//                 label 'prodjenkins'
-//             }
-//             steps {
-//                 timeout(time:1, unit:'DAYS'){
-//                 input message:'Approve PRODUCTION Deployment?'
-//                 }
-//                 echo "Running app on Prod env"
-//                 sh '''
-//                 docker stop tomcatInstanceProd || true
-//                 docker rm tomcatInstanceProd || true
-//                 docker-compose up -d 
-//                 '''
-//             }
-//         }
-//     }
-//     post { 
-//         always { 
-//             mail to: 'susanstha29@gmail.com',
-//             subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
-//             body: "Please go to ${BUILD_URL} and verify the build"
-//         }
-//         success {
-//             mail bcc: '', body: """Hi Team,
+          stage('Deploy Production Environment') {
+            agent {
+                label 'prodjenkins'
+            }
+            steps {
+                timeout(time:1, unit:'DAYS'){
+                input message:'Approve PRODUCTION Deployment?'
+                }
+                echo "Running app on Prod env"
+                sh '''
+                docker stop tomcatInstanceProd || true
+                docker rm tomcatInstanceProd || true
+                docker-compose up -d 
+                '''
+            }
+        }
+    }
+    post { 
+        always { 
+            mail to: 'susanstha29@gmail.com',
+            subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
+            body: "Please go to ${BUILD_URL} and verify the build"
+        }
+        success {
+            mail bcc: '', body: """Hi Team,
 
-// Build #$BUILD_NUMBER is successful, please go through the url
+Build #$BUILD_NUMBER is successful, please go through the url
 
-// $BUILD_URL
+$BUILD_URL
 
-// and verify the details.
+and verify the details.
 
-// Regards,
-// DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
-//         }
-//         failure {
-//             mail bcc: '', body: """Hi Team,
+Regards,
+DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
+        }
+        failure {
+            mail bcc: '', body: """Hi Team,
             
-// Build #$BUILD_NUMBER is unsuccessful, please go through the url
+Build #$BUILD_NUMBER is unsuccessful, please go through the url
 
-// $BUILD_URL
+$BUILD_URL
 
-// and verify the details.
+and verify the details.
 
-// Regards,
-// DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
-//         }
+Regards,
+DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
+        }
     }
 }
 
