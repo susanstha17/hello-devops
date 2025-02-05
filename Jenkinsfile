@@ -1,94 +1,112 @@
 pipeline {
-    agent {
-        label 'prodjenkins'
+    agent any
+    environment {
+        scannerHome = tool 'sonar7.0'
     }
     stages {
         stage('Build Application') {
             steps {
-                sh 'mvn -f ./pom.xml clean package'
+                sh 'mvn -f ./pom.xml clean package -DskipTests'
             }
             post {
                 success {
                     echo "Now Archiving the Artifacts...."
-                    archiveArtifacts artifacts: '**/*.war'
+                    archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
         }
-        stage('Create Tomcat Image') {
+
+        stage('Unit Test') {
+            steps {
+                sh 'mvn -f pom.xml test'
+            }
+        }
+
+        stage('Checkstyle Analysis') {
+            steps {
+                sh 'mvn -f pom.xml checkstyle:checkstyle'
+            }
+        }
+
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=java-tomcat-sample \
+                        -Dsonar.projectName=java-tomcat-sample \
+                        -Dsonar.projectVersion=4.0 \
+                        -Dsonar.sources=src/ \
+                        -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                        -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                        -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
+            }
+        }
+
+        stage('Upload Artifact to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: '172.31.25.191:8081',
+                    groupId: 'QA',
+                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+                    repository: 'java-app',
+                    credentialsId: 'sonartypecred',
+                    artifacts: [
+                        [artifactId: 'java-tomcat-sample',
+                         classifier: '',
+                         file: 'target/java-tomcat-maven-example.war',
+                         type: 'war']
+                    ]
+                )
+            }
+        }
+
+        stage('Create Tomcat Docker Image') {
             agent {
                 label 'prodjenkins'
             }
             steps {
                 copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
-                echo "Building docker image"
+                echo "Building Docker Image"
                 sh '''
                 original_pwd=$(pwd -P)
                 cd .
-                docker compose build --no-cache
+                docker-compose build --no-cache
                 cd $original_pwd
-                sh '''
+                '''
             }
         }
-         stage('Deploy to Stagging Env') {
+
+        stage('Deploy to Staging Environment') {
             agent {
                 label 'prodjenkins'
             }
             steps {
-                echo "Running app on stagging env"
+                echo "Running app on Staging Env"
                 sh '''
                 docker stop tomcatInstance || true
                 docker rm tomcatInstance || true
-                 docker compose up -d
-                sh '''
+                docker-compose up -d
+                '''
             }
         }
-          stage('Deploy Production Environment') {
+
+        stage('Deploy to Production Environment') {
             agent {
                 label 'prodjenkins'
             }
             steps {
-                timeout(time:1, unit:'DAYS'){
-                input message:'Approve PRODUCTION Deployment?'
+                timeout(time: 1, unit: 'DAYS') {
+                    input message: 'Approve PRODUCTION Deployment?'
                 }
-                echo "Running app on Prod env"
+                echo "Running app on Prod Env"
                 sh '''
                 docker stop tomcatInstanceProd || true
                 docker rm tomcatInstanceProd || true
-                docker-compose up -d 
+                docker-compose up -d
                 '''
             }
         }
     }
-    post { 
-        always { 
-            mail to: 'susanstha29@gmail.com',
-            subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
-            body: "Please go to ${BUILD_URL} and verify the build"
-        }
-        success {
-            mail bcc: '', body: """Hi Team,
-
-Build #$BUILD_NUMBER is successful, please go through the url
-
-$BUILD_URL
-
-and verify the details.
-
-Regards,
-DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
-        }
-        failure {
-            mail bcc: '', body: """Hi Team,
-            
-Build #$BUILD_NUMBER is unsuccessful, please go through the url
-
-$BUILD_URL
-
-and verify the details.
-
-Regards,
-DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
-        }
-    }
 }
-
