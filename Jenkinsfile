@@ -47,10 +47,10 @@ pipeline {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: '172.31.25.191:8081',
+                    nexusUrl: '192.168.56.30:8081',
                     groupId: 'QA',
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'java-app',
+                    repository: 'java-application',
                     credentialsId: 'sonartypecred',
                     artifacts: [
                         [artifactId: 'java-tomcat-sample',
