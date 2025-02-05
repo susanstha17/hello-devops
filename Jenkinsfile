@@ -51,7 +51,7 @@ pipeline {
                     groupId: 'QA',
                     version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
                     repository: 'java-application',
-                    credentialsId: 'sonartypecred',
+                    credentialsId: 'sonartypecredential',
                     artifacts: [
                         [artifactId: 'java-tomcat-sample',
                          classifier: '',
