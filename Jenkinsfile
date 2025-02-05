@@ -35,7 +35,6 @@ pipeline {
                         -Dsonar.projectName=java-tomcat-sample \
                         -Dsonar.projectVersion=4.0 \
                         -Dsonar.sources=src/ \
-                        -Dsonar.java.binaries=target/classes \
                         -Dsonar.junit.reportsPath=target/surefire-reports/ \
                         -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                         -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
@@ -56,7 +55,7 @@ pipeline {
                     artifacts: [
                         [artifactId: 'java-tomcat-sample',
                          classifier: '',
-                         file: 'target/java-tomcat-maven-example.war',
+                         file: 'java-tomcat-maven-example.war',
                          type: 'war']
                     ]
                 )
