@@ -109,14 +109,14 @@ pipeline {
                 '''
             }
         }
-        post { 
-            always { 
-                mail to: 'susanstha29@gmail.com',
-                subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
-                body: "Please go to ${BUILD_URL} and verify the build"
-            }
-            success {
-                mail bcc: '', body: """Hi Team,
+            post { 
+                always { 
+                    mail to: 'susanstha29@gmail.com',
+                    subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
+                    body: "Please go to ${BUILD_URL} and verify the build"
+                }
+                success {
+                    mail bcc: '', body: """Hi Team,
 
 Build #$BUILD_NUMBER is successful, please go through the url
 
