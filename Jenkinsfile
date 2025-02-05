@@ -56,7 +56,7 @@ pipeline {
                     artifacts: [
                         [artifactId: 'techaxis-webapp',
                          classifier: '',
-                         file: 'hello-devops/target/techaxis-webapp.war',
+                         file: 'target/techaxis-webapp.war',
                          type: 'war']
                     ]
                 )
