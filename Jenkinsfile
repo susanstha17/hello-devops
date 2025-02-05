@@ -53,9 +53,9 @@ pipeline {
                     repository: 'java-application',
                     credentialsId: 'sonartypecredential',
                     artifacts: [
-                        [artifactId: 'java-tomcat-sample',
+                        [artifactId: 'techaxis-webapp',
                          classifier: '',
-                         file: 'java-tomcat-maven-example.war',
+                         file: 'target/techaxis-webapp.war',
                          type: 'war']
                     ]
                 )
