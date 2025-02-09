@@ -1,5 +1,4 @@
-# FROM tomcat:9.0
-FROM chainguard/tomcat
+FROM tomcat:9.0
 ARG PROJDIR="/usr/local/tomcat/webapps/"
 RUN useradd -m -s /bin/bash susan && echo "susan:susan" | chpasswd
 RUN usermod -aG sudo susan
