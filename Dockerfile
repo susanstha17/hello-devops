@@ -1,7 +1,15 @@
-FROM tomcat:9.0-alpine
+FROM tomcat:9.0.98-jdk17
 
 ARG PROJDIR="/usr/local/tomcat/webapps/"
-RUN adduser -D -s /bin/sh susan && echo "susan:susan" | chpasswd
+
+USER root
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y sudo && \
+    useradd -m -s /bin/bash susan && echo "susan:susan" | chpasswd && \
+    usermod -aG sudo susan && \
+    chown -R susan:susan $PROJDIR && \
+    rm -rf /var/lib/apt/lists/*  # Reduce image size
+
 USER susan
 WORKDIR $PROJDIR
 
