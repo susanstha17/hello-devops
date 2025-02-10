@@ -1,9 +1,19 @@
-FROM tomcat:9.0
+FROM tomcat:9.0-jdk17-temurin-jammy
+
 ARG PROJDIR="/usr/local/tomcat/webapps/"
-RUN useradd -m -s /bin/bash susan && echo "susan:susan" | chpasswd
-RUN usermod -aG sudo susan
+
+USER root
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y sudo && \
+    useradd -m -s /bin/bash susan && echo "susan:susan" | chpasswd && \
+    usermod -aG sudo susan && \
+    chown -R susan:susan $PROJDIR && \
+    rm -rf /var/lib/apt/lists/*  # Reduce image size
+
 USER susan
 WORKDIR $PROJDIR
+
 COPY **/*.war $PROJDIR/ROOT.war
+
 EXPOSE 8080
-CMD [ "catalina.sh","run" ]
+CMD ["catalina.sh", "run"]
