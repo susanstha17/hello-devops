@@ -43,23 +43,23 @@ pipeline {
             }
         }
 
-        stage('Upload Artifact to Nexus') {
-            steps {
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: '192.168.56.30:8081',
-                    groupId: 'QA',
-                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'java-application',
-                    credentialsId: 'sonartypecredential',
-                    artifacts: [
-                        [artifactId: 'techaxis-webapp',
-                         classifier: '',
-                         file: 'target/techaxis-webapp.war',
-                         type: 'war']
-                    ]
-                )
+        // stage('Upload Artifact to Nexus') {
+        //     steps {
+        //         nexusArtifactUploader(
+        //             nexusVersion: 'nexus3',
+        //             protocol: 'http',
+        //             nexusUrl: '192.168.56.30:8081',
+        //             groupId: 'QA',
+        //             version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+        //             repository: 'java-application',
+        //             credentialsId: 'sonartypecredential',
+        //             artifacts: [
+        //                 [artifactId: 'techaxis-webapp',
+        //                  classifier: '',
+        //                  file: 'target/techaxis-webapp.war',
+        //                  type: 'war']
+        //             ]
+        //         )
             }
         }
 
@@ -142,6 +142,6 @@ DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATI
         }
     }
 
-}
+// }
 
 
