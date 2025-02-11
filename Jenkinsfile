@@ -42,23 +42,23 @@ pipeline {
                 sh '''
             }
         }
-          stage('Deploy Production Environment') {
-            agent {
-                label 'prodjenkins'
-            }
-            steps {
-                timeout(time:1, unit:'DAYS'){
-                input message:'Approve PRODUCTION Deployment?'
-                }
-                echo "Running app on Prod env"
-                sh '''
-                docker stop tomcatInstanceProd || true
-                docker rm tomcatInstanceProd || true
-                docker-compose up -d 
-                '''
-            }
+        //   stage('Deploy Production Environment') {
+        //     agent {
+        //         label 'prodjenkins'
+        //     }
+        //     steps {
+        //         timeout(time:1, unit:'DAYS'){
+        //         input message:'Approve PRODUCTION Deployment?'
+        //         }
+        //         echo "Running app on Prod env"
+        //         sh '''
+        //         docker stop tomcatInstanceProd || true
+        //         docker rm tomcatInstanceProd || true
+        //         docker-compose up -d 
+        //         '''
+        //     }
         }
-    }
+    // }
 //     post { 
 //         always { 
 //             mail to: 'susanstha29@gmail.com',
