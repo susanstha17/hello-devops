@@ -42,8 +42,8 @@ pipeline {
                 '''
             }
         }
-        // Uncomment this section if you want to deploy to production
-        
+    
+        /*
         stage('Deploy Production Environment') {
             agent {
                 label 'prodjenkins'
@@ -60,7 +60,7 @@ pipeline {
                 '''
             }
         }
-        
+        */
     }
     post { 
         always { 
