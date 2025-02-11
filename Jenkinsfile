@@ -1,10 +1,8 @@
 pipeline {
-    agent { label 'prodjenkins' }  // Ensure all stages run on the slave node
-
+    agent any
     environment {
         scannerHome = tool 'sonar7.0'
     }
-
     stages {
         stage('Build Application') {
             steps {
@@ -45,30 +43,30 @@ pipeline {
             }
         }
 
-        // Uncomment this section if you want to enable Nexus artifact upload
-        /*
-        stage('Upload Artifact to Nexus') {
-            steps {
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: '192.168.56.30:8081',
-                    groupId: 'QA',
-                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
-                    repository: 'java-application',
-                    credentialsId: 'sonartypecredential',
-                    artifacts: [
-                        [artifactId: 'techaxis-webapp',
-                         classifier: '',
-                         file: 'target/techaxis-webapp.war',
-                         type: 'war']
-                    ]
-                )
-            }
-        }
-        */
+        // stage('Upload Artifact to Nexus') {
+        //     steps {
+        //         nexusArtifactUploader(
+        //             nexusVersion: 'nexus3',
+        //             protocol: 'http',
+        //             nexusUrl: '192.168.56.30:8081',
+        //             groupId: 'QA',
+        //             version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+        //             repository: 'java-application',
+        //             credentialsId: 'sonartypecredential',
+        //             artifacts: [
+        //                 [artifactId: 'techaxis-webapp',
+        //                  classifier: '',
+        //                  file: 'target/techaxis-webapp.war',
+        //                  type: 'war']
+        //             ]
+        //         )
+        //     }
+        // }
 
         stage('Create Tomcat Docker Image') {
+            agent {
+                label 'prodjenkins'
+            }
             steps {
                 copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
                 echo "Building Docker Image"
@@ -81,48 +79,47 @@ pipeline {
             }
         }
 
-        // Uncomment this section if you want to enable Staging deployment
-        /*
-        stage('Deploy to Staging Environment') {
-            steps {
-                echo "Running app on Staging Env"
-                sh '''
-                docker stop tomcatInstance || true
-                docker rm tomcatInstance || true
-                docker-compose up -d
-                '''
-            }
-        }
-        */
+        // stage('Deploy to Staging Environment') {
+        //     agent {
+        //         label 'prodjenkins'
+        //     }
+        //     steps {
+        //         echo "Running app on Staging Env"
+        //         sh '''
+        //         docker stop tomcatInstance || true
+        //         docker rm tomcatInstance || true
+        //         docker-compose up -d
+        //         '''
+        //     }
+        // }
 
-        // Uncomment this section if you want to enable Production deployment
-        /*
-        stage('Deploy to Production Environment') {
-            steps {
-                timeout(time: 1, unit: 'DAYS') {
-                    input message: 'Approve PRODUCTION Deployment?'
-                }
-                echo "Running app on Prod Env"
-                sh '''
-                docker stop tomcatInstanceProd || true
-                docker rm tomcatInstanceProd || true
-                docker-compose up -d
-                '''
-            }
-        }
-        */
+        // stage('Deploy to Production Environment') {
+        //     agent {
+        //         label 'prodjenkins'
+        //     }
+        //     steps {
+        //         timeout(time: 1, unit: 'DAYS') {
+        //             input message: 'Approve PRODUCTION Deployment?'
+        //         }
+        //         echo "Running app on Prod Env"
+        //         sh '''
+        //         docker stop tomcatInstanceProd || true
+        //         docker rm tomcatInstanceProd || true
+        //         docker-compose up -d
+        //         '''
+        //     }
+        // }
     }
-    
     post { 
         always { 
             mail to: 'susanstha29@gmail.com',
             subject: "Job '${JOB_NAME}' (${BUILD_NUMBER}) is waiting for input",
             body: "Please go to ${BUILD_URL} and verify the build"
-        }
-        success {
-            mail bcc: '', body: """Hi Team,
+            }
+            success {
+                mail bcc: '', body: """Hi Team,
 
-Build #$BUILD_NUMBER is successful, please go through the URL:
+Build #$BUILD_NUMBER is successful, please go through the url
 
 $BUILD_URL
 
@@ -130,11 +127,11 @@ and verify the details.
 
 Regards,
 DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
-        }
-        failure {
-            mail bcc: '', body: """Hi Team,
-                
-Build #$BUILD_NUMBER is unsuccessful, please go through the URL:
+            }
+            failure {
+                mail bcc: '', body: """Hi Team,
+                    
+Build #$BUILD_NUMBER is unsuccessful, please go through the url
 
 $BUILD_URL
 
@@ -144,4 +141,7 @@ Regards,
 DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
         }
     }
+
 }
+
+
