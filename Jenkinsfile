@@ -71,12 +71,22 @@ pipeline {
         stage('Create Tomcat Docker Image') {
             steps {
                 copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
-                echo "Building Docker Image"
+                // echo "Building Docker Image"
+                // sh '''
+                // original_pwd=$(pwd -P)
+                // cd .
+                // docker-compose build --no-cache
+                // cd $original_pwd
+                // '''
+                 echo "Current Workspace: ${WORKSPACE}"
+
+                // List files to confirm the docker-compose.yml exists
+                sh 'ls -alh'
+
+                // Change to the correct directory and run docker-compose
                 sh '''
-                original_pwd=$(pwd -P)
-                cd .
+                cd ${WORKSPACE}  # Ensure we're in the correct workspace folder
                 docker-compose build --no-cache
-                cd $original_pwd
                 '''
             }
         }
