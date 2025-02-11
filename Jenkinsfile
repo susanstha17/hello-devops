@@ -45,8 +45,8 @@ pipeline {
             }
         }
 
-        // Uncomment this section if you want to enable Nexus artifact upload
-        /*
+       
+        
         stage('Upload Artifact to Nexus') {
             steps {
                 nexusArtifactUploader(
@@ -66,7 +66,7 @@ pipeline {
                 )
             }
         }
-        */
+        
 
         stage('Create Tomcat Docker Image') {
             steps {
