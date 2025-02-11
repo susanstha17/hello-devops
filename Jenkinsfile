@@ -26,38 +26,41 @@ pipeline {
                 cd .
                 docker compose build --no-cache
                 cd $original_pwd
-                sh '''
+                '''
             }
         }
-         stage('Deploy to Stagging Env') {
+        stage('Deploy to Staging Env') {
             agent {
                 label 'prodjenkins'
             }
             steps {
-                echo "Running app on stagging env"
+                echo "Running app on staging env"
                 sh '''
                 docker stop tomcatInstance || true
                 docker rm tomcatInstance || true
-                 docker compose up -d
-                sh '''
+                docker compose up -d
+                '''
             }
         }
-        //   stage('Deploy Production Environment') {
-        //     agent {
-        //         label 'prodjenkins'
-        //     }
-        //     steps {
-        //         timeout(time:1, unit:'DAYS'){
-        //         input message:'Approve PRODUCTION Deployment?'
-        //         }
-        //         echo "Running app on Prod env"
-        //         sh '''
-        //         docker stop tomcatInstanceProd || true
-        //         docker rm tomcatInstanceProd || true
-        //         docker-compose up -d 
-        //         '''
-        //     }
+        // Uncomment this section if you want to deploy to production
+        /*
+        stage('Deploy Production Environment') {
+            agent {
+                label 'prodjenkins'
+            }
+            steps {
+                timeout(time:1, unit:'DAYS'){
+                    input message:'Approve PRODUCTION Deployment?'
+                }
+                echo "Running app on Prod env"
+                sh '''
+                docker stop tomcatInstanceProd || true
+                docker rm tomcatInstanceProd || true
+                docker-compose up -d 
+                '''
+            }
         }
+        */
     }
     post { 
         always { 
@@ -66,32 +69,28 @@ pipeline {
             body: "Please go to ${BUILD_URL} and verify the build"
         }
         success {
-            mail bcc: '', body: """Hi Team,
+            mail body: """Hi Team,
 
-Build #$BUILD_NUMBER is successful, please go through the url
+Build #$BUILD_NUMBER is successful, please go through the URL:
 
 $BUILD_URL
 
 and verify the details.
 
 Regards,
-DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
+DevOps Team""", subject: 'BUILD SUCCESS NOTIFICATION', to: 'susanstha29@gmail.com'
         }
         failure {
-            mail bcc: '', body: """Hi Team,
+            mail body: """Hi Team,
             
-Build #$BUILD_NUMBER is unsuccessful, please go through the url
+Build #$BUILD_NUMBER is unsuccessful, please go through the URL:
 
 $BUILD_URL
 
 and verify the details.
 
 Regards,
-DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
+DevOps Team""", subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
         }
     }
-
-
-
-// }
-
+}
