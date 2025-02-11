@@ -86,7 +86,7 @@ pipeline {
                 // Change to the correct directory and run docker-compose
                 sh '''
                 cd ${WORKSPACE}  # Ensure we're in the correct workspace folder
-                docker-compose build --no-cache
+                docker compose build --no-cache
                 '''
             }
         }
