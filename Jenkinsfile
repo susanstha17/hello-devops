@@ -1,8 +1,10 @@
 pipeline {
-    agent any
+    agent { label 'prodjenkins' }  // Ensure all stages run on the slave node
+
     environment {
         scannerHome = tool 'sonar7.0'
     }
+
     stages {
         stage('Build Application') {
             steps {
@@ -67,9 +69,6 @@ pipeline {
         */
 
         stage('Create Tomcat Docker Image') {
-            agent {
-                label 'prodjenkins'
-            }
             steps {
                 copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
                 echo "Building Docker Image"
@@ -85,9 +84,6 @@ pipeline {
         // Uncomment this section if you want to enable Staging deployment
         /*
         stage('Deploy to Staging Environment') {
-            agent {
-                label 'prodjenkins'
-            }
             steps {
                 echo "Running app on Staging Env"
                 sh '''
@@ -102,9 +98,6 @@ pipeline {
         // Uncomment this section if you want to enable Production deployment
         /*
         stage('Deploy to Production Environment') {
-            agent {
-                label 'prodjenkins'
-            }
             steps {
                 timeout(time: 1, unit: 'DAYS') {
                     input message: 'Approve PRODUCTION Deployment?'
