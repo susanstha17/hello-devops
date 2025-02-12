@@ -82,7 +82,6 @@ pipeline {
             }
         }
 
-        // Uncomment this section if you want to enable Staging deployment
         /*
         stage('Deploy to Staging Environment') {
             steps {
@@ -96,7 +95,6 @@ pipeline {
         }
         */
 
-        // Uncomment this section if you want to enable Production deployment
         /*
         stage('Deploy to Production Environment') {
             steps {
@@ -142,7 +140,7 @@ $BUILD_URL
 and verify the details.
 
 Regards,
-DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
+DevOps Trainee""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'susanstha29@gmail.com'
         }
     }
 }
