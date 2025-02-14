@@ -4,4 +4,9 @@ services:
     build: .
     ports:
       - "8082:8080"
+    volumes:
+      - ./logs:/usr/local/tomcat/logs
+    restart: always 
+    
+    
     

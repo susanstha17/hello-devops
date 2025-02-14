@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'prodjenkins' }  // Ensure all stages run on the slave node
+    agent { label 'prodjenkins' }  
 
     environment {
         scannerHome = tool 'sonar7.0'
@@ -121,7 +121,7 @@ pipeline {
         success {
             mail bcc: '', body: """Hi Team,
 
-Build #$BUILD_NUMBER is successful, please go through the URL:
+Build #$BUILD_NUMBER is successful, You can go through the URL:
 
 $BUILD_URL
 
@@ -133,7 +133,7 @@ DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD SUCCESS NOTIFICAT
         failure {
             mail bcc: '', body: """Hi Team,
                 
-Build #$BUILD_NUMBER is unsuccessful, please go through the URL:
+Build #$BUILD_NUMBER is unsuccessful, You can go through the URL:
 
 $BUILD_URL
 
