@@ -1,4 +1,4 @@
-FROM tomcat:10.0.98-jdk17
+FROM tomcat:10-jdk17
 
 ARG PROJDIR="/usr/local/tomcat/webapps/"
 
