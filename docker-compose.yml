@@ -7,6 +7,9 @@ services:
     volumes:
       - ./logs:/usr/local/tomcat/logs
     restart: always 
+    networks:
+      - tomcat_network
     
-    
-    
+networks:
+  tomcat_network:
+    driver: bridge
